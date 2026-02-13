@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaming Overlay Site</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none !important;
+}
+
+body {
+    background: url("bg.gif") no-repeat center center/cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    width: 52px;
+    height: 52px;
+    background: url("C1.png") no-repeat center/contain;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+}
+
+/* Center Image */
+.center-image {
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Game Box */
+.game-box {
+    position: fixed;
+    top: 80px;
+    left: 120px;
+    background: white;
+    padding: 10px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
+}
+.game-box:hover { transform: scale(1.05); }
+.game-box img { width: 120px; }
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Popup */
+.popup {
+    width: 1000px;
+    height: 600px;
+    background: url("Obg2.png") no-repeat center/cover;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 40px;
+    color: rgb(200, 11, 93);
+    font-weight: bold;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+.close-btn:hover { transform: scale(1.2); }
+
+/* Start Screen */
+.start-container { position: relative; height: 100%; }
+
+.game-title {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Pacifico', cursive;
+    font-size: 42px;
+    color: white;
+    background: url("Lets.png") no-repeat center/contain;
+    padding: 70px 140px;
+    white-space: nowrap;
+}
+
+.start-btn-img {
+    position: absolute;
+    top: 340px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    transition: 0.3s ease;
+}
+.start-btn-img:hover { transform: translateX(-50%) scale(1.1); }
+
+/* Love Screen */
+.love-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.text-bg {
+    background: white;
+    padding: 30px 60px;
+    border-radius: 30px;
+}
+
+.love-text {
+    font-family: 'Pacifico', cursive;
+    font-size: 42px;
+    color: #ff4da6;
+}
+
+.love-buttons {
+    position: relative;
+    display: flex;
+    gap: 40px;
+}
+
+.love-btn {
+    background: linear-gradient(45deg, #ff4da6, #ff66cc);
+    border: none;
+    padding: 15px 40px;
+    font-size: 20px;
+    border-radius: 40px;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s ease;
+    position: relative;
+}
+
+/* Final Screen */
+.final-screen {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    animation: fadeIn 0.8s ease forwards;
+}
+.love-gif { width: 250px; }
+
+.final-text {
+    font-family: 'Pacifico', cursive;
+    font-size: 50px;
+    color: #ff4da6;
+    text-shadow: 0 0 20px rgba(255, 77, 166, 0.6);
+}
+
+/* Animations */
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes fadeOut { from {opacity:1;} to {opacity:0;} }
+@keyframes floatUp {
+    from { transform: translateY(0); opacity:1; }
+    to { transform: translateY(-120vh); opacity:0; }
+}
+
+/* Husband Day Text */
+.husband-day {
+    position: fixed;
+    bottom: 65px;
+    right: 60px;
+    background: white;
+    padding: 20px 35px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.husband-day h3 {
+    font-family: 'Pacifico', cursive;
+    color: #ff4da6;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.husband-day p {
+    font-family: 'Pacifico', cursive;
+    color: #ff66cc;
+    font-size: 22px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="custom-cursor" id="cursor"></div>
+
+<div class="husband-day">
+    <h3>My Husband's Day 💖</h3>
+    <p>13/02/2026</p>
+</div>
+
+<div class="game-box" id="gameBox1">
+    <img src="Game.png">
+</div>
+
+<div class="game-box" id="gameBox2" style="top:300px; left:120px;">
+    <img src="Y.jpg">
+</div>
+
+<div class="game-box" id="gameBox3" style="top:520px; left:120px;">
+    <img src="Cic.png">
+</div>
+
+<div class="game-box" id="gameBox4" style="top:80px; left:1250px;">
+    <img src="M.jpg">
+</div>
+
+<img src="AZ.png" class="center-image">
+
+<div class="overlay" id="overlay">
+    <div class="popup" id="popup">
+        <span class="close-btn" onclick="closePopup()">✖</span>
+        <div class="start-container">
+            <h2 class="game-title">Lets play a game</h2>
+            <img src="SB.png" class="start-btn-img" id="startBtn">
+        </div>
+    </div>
+</div>
+
+<script>
+const cursor = document.getElementById("cursor");
+const overlay = document.getElementById("overlay");
+const popup = document.getElementById("popup");
+
+/* Cursor */
+document.addEventListener("mousemove", e=>{
+    cursor.style.left=e.clientX+"px";
+    cursor.style.top=e.clientY+"px";
+});
+
+/* Cursor Hover Change */
+document.addEventListener("mouseover", (e) => {
+    if (
+        e.target.closest("button") ||
+        e.target.closest(".game-box") ||
+        e.target.closest(".start-btn-img") ||
+        e.target.closest(".love-btn") ||
+        e.target.closest(".close-btn") ||
+        e.target.closest("img") ||
+        e.target.closest("video")
+    ) {
+        cursor.style.backgroundImage = 'url("C2.png")';
+    } else {
+        cursor.style.backgroundImage = 'url("C1.png")';
+    }
+});
+
+document.addEventListener("mouseout", () => {
+    cursor.style.background = 'url("C1.png") no-repeat center/contain';
+});
+
+/* Open / Close */
+function openPopup(){ overlay.style.display="flex"; }
+function closePopup(){ overlay.style.display="none"; }
+
+document.getElementById("gameBox1").addEventListener("click", openPopup);
+
+/* LOVE GAME */
+document.getElementById("startBtn").addEventListener("click", showLoveScreen);
+
+function showLoveScreen(){
+    popup.innerHTML=`
+    <span class="close-btn" onclick="closePopup()">✖</span>
+    <div class="love-container" style="position: relative;">
+        <div class="text-bg">
+            <h2 class="love-text" id="loveText">Do you Love me? 💖</h2>
+        </div>
+        <div class="love-buttons" id="btnContainer" style="height: 100px; width: 100%; display: flex; justify-content: center; align-items: center;">
+            <button class="love-btn yes-btn">Yes 💕</button>
+            <button class="love-btn no-btn" style="position: relative;">No 💔</button>
+        </div>
+    </div>`;
+
+    const yesBtn = document.querySelector(".yes-btn");
+    const noBtn = document.querySelector(".no-btn");
+    const loveText = document.getElementById("loveText");
+    
+    let noClicks = 0, yesScale = 1, noScale = 1, runaway = false;
+    const messages = ["click yes for a surprise 💝", "Don't do this to me! 😭", "pleaseeee.... 🥺"];
+
+    yesBtn.addEventListener("click", () => {
+        popup.innerHTML = `<div class="final-screen"><span class="close-btn" onclick="closePopup()">✖</span><img src="Cgif.gif" class="love-gif"><h2 class="final-text">LOVE YOU! 💖</h2></div>`;
+    });
+
+    noBtn.addEventListener("click", () => {
+        if (noClicks < 3) {
+            loveText.textContent = messages[noClicks++];
+            yesScale += 0.4;
+            noScale -= 0.1;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noBtn.style.transform = `scale(${noScale})`;
+            
+            if (noClicks === 3) { 
+                runaway = true; 
+                noBtn.style.position = "fixed"; // Changed to fixed to match clientX/Y coordinates
+                noBtn.style.zIndex = "1000";
+            }
+        }
+    });
+
+    // We track mousemove on the whole window to ensure the button reacts 
+    // even if the mouse moves fast
+    window.addEventListener("mousemove", (e) => {
+        if (!runaway) return;
+
+        const rect = noBtn.getBoundingClientRect();
+        // Calculate distance between mouse and button center
+        const btnCenterX = rect.left + rect.width / 2;
+        const btnCenterY = rect.top + rect.height / 2;
+        
+        const dist = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
+
+        if (dist < 100) { // If mouse gets within 100px
+            // Move to a random spot within the viewport, but keeping it inside the popup area
+            const popRect = popup.getBoundingClientRect();
+            
+            const newX = popRect.left + Math.random() * (popRect.width - rect.width);
+            const newY = popRect.top + Math.random() * (popRect.height - rect.height);
+            
+            noBtn.style.left = newX + "px";
+            noBtn.style.top = newY + "px";
+        }
+    });
+}
+
+/* Y SECTION */
+document.getElementById("gameBox2").addEventListener("click",()=>{
+overlay.style.display="flex";
+overlay.style.background="white";
+
+popup.innerHTML=`
+<span class="close-btn" onclick="closePopup()">✖</span>
+<div style="display:flex;justify-content:center;align-items:center;height:100%;gap:60px;">
+<img id="p1" src="P1.png" style="width:250px;border-radius:20px;box-shadow:0 10px 20px rgba(0,0,0,0.3);cursor:pointer;">
+<img id="p2" src="P2.png" style="width:250px;border-radius:20px;box-shadow:0 10px 20px rgba(0,0,0,0.3);cursor:pointer;">
+</div>`;
+
+document.getElementById("p1").onclick=()=>showVideo("V1.mp4");
+document.getElementById("p2").onclick=()=>showVideo("V2.mp4");
+});
+
+/* VIDEO SCREEN */
+function showVideo(src){
+overlay.style.display="none";
+
+document.body.insertAdjacentHTML("beforeend",`
+<div id="videoScreen" style="
+position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+backdrop-filter:blur(12px);
+background:rgba(255,255,255,0.2);
+z-index:9998;
+animation:fadeIn 0.6s ease forwards;">
+
+<div class="hearts"></div>
+
+<button onclick="goBack()" style="
+position:absolute;top:30px;left:40px;
+padding:10px 25px;border:none;border-radius:30px;
+background:linear-gradient(45deg,#ff4da6,#ff66cc);
+color:white;font-weight:bold;cursor:pointer;">⬅ Back</button>
+
+<span class="close-btn" onclick="closeVideo()" 
+style="position:absolute;top:25px;right:40px;font-size:45px;">✖</span>
+
+<div style="
+background:white;padding:30px;border-radius:25px;
+box-shadow:0 25px 60px rgba(0,0,0,0.4);position:relative;z-index:2;">
+<video controls autoplay style="
+max-width:90vw;max-height:85vh;width:auto;height:auto;display:block;">
+<source src="${src}" type="video/mp4">
+</video>
+</div>
+</div>`);
+
+createHearts();
+}
+
+function createHearts(){
+const container=document.querySelector(".hearts");
+for(let i=0;i<20;i++){
+const h=document.createElement("div");
+h.innerHTML="💖";
+h.style.position="absolute";
+h.style.left=Math.random()*100+"%";
+h.style.bottom="-20px";
+h.style.fontSize=(20+Math.random()*20)+"px";
+h.style.animation=`floatUp ${5+Math.random()*5}s linear infinite`;
+container.appendChild(h);
+}
+}
+
+function goBack(){
+document.getElementById("videoScreen").remove();
+overlay.style.display="flex";
+overlay.style.background="white";
+}
+
+function closeVideo(){
+document.getElementById("videoScreen").remove();
+}
+
+document.getElementById("gameBox3").addEventListener("click", () => {
+    overlay.style.display = "flex";
+    overlay.style.background = "white";
+
+    popup.innerHTML = `
+        <span class="close-btn" onclick="closePopup()" style="z-index: 10;">✖</span>
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100%;
+            position:relative;
+            ">
+
+            <!-- Background -->
+            <img src="Calbg.png" style="
+                width:500px;
+                position:absolute;
+                top:15%;                 /* slightly down*/  
+                z-index:1;
+            ">
+
+            <!-- Small H image (between bg and calendar) -->
+            <img src="h.png" style="
+                width:100px;              /* smaller */
+                position:absolute;
+                z-index:2;
+                top:57%;                 /* slightly down */
+                left:60%;                /* slightly right */
+                transform:translate(-50%,-50%);
+            ">
+
+            <!-- Calendar on top -->
+            <img src="Calen.png" style="
+                width:530px;
+                position:absolute;
+                top:0%;
+                z-index:3;
+            ">
+
+        </div>
+    `;
+});
+
+document.getElementById("gameBox4").addEventListener("click", () => {
+    overlay.style.display = "flex";
+    overlay.style.background = "white";
+
+    popup.innerHTML = `
+<span class="close-btn" onclick="closePopup()" style="z-index:10;">✖</span>
+<div style="
+    width:100%;
+    height:75%;
+    position:absolute;
+    top:15%;
+    left:0%;
+    padding:60px 80px;
+    overflow-y:auto;
+    font-family:'Pacifico', cursive;
+    font-size:30px;
+    color:#ff4da6;
+    text-align:center;
+    line-height:1.6;
+">
+
+Happy Birthday to the one who makes my heart skip a beat 🫀<br><br>
+
+Being with you feels like home 🫂 like peace 🍃 like everything I ever wished for 🥹  
+I love the way you care for me 🤗 the way you protect me 🩷 and the way you love me without limits ❣️😭<br><br>
+
+Happy Birthday to the man who holds my heart so gently yet so strongly 💗❤️‍🩹<br><br>
+
+Your smile is my comfort 🫂 your voice is my favorite sound 🖇️ and your love is my safest place 🌎🫶🏻  
+I hope this year brings you closer to your dreams and fills your life with the same happiness you bring to mine every single day ❣️♾️<br><br>
+
+You are my biggest supporter 💫 my best friend ✨ and my greatest blessing.  
+Life feels easier and brighter ✨ with you by my side.  
+I pray that this birthday marks the beginning of a year full of success, good health, and endless laughter 💐❤️<br><br>
+
+You inspire me with your strength 💪🏻 calm me with your words 🥺 and love me in a way that feels pure and real 🫶🏻❣️  
+I hope this year rewards you with everything your heart desires 🌙<br><br>
+
+Thank you for choosing me, for understanding me 🫂 and for loving me the way you do 💝  
+I feel so blessed to walk through life with you 👩‍❤️‍👨 to share dreams 🌺 laughter 😄 and even challenges together 🫰🏻.  
+You make ordinary moments feel magical 💫<br><br>
+
+Love you forever and ever 🫶🏻♾️❣️😘
+
+</div>
+`;});
+
+</script>
+
+</body>
+</html>
